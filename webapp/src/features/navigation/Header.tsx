@@ -9,7 +9,7 @@ export function Header() {
         <Plus className="size-4" />
       </Button>
       <Avatar>
-        <AvatarImage src="https://github.com/shadcn.png" />
+        <AvatarImage src="https://github.com/hexxt-git.png" />
       </Avatar>
     </div>
   )

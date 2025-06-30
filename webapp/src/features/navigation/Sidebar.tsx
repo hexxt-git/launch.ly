@@ -19,14 +19,14 @@ export function Sidebar() {
   const location = useLocation()
 
   return (
-    <div className="m-2 me-1 px-4 py-6 bg-card rounded-lg">
+    <div className="m-2 me-1 px-4 py-6 bg-gradient-to-br from-card to-card/50 rounded-lg border-2 border-border/70">
       <div className="flex items-center gap-2">
         <Avatar>
-          <AvatarImage src="https://github.com/shadcn.png" />
+          <AvatarImage src="https://github.com/hexxt-git.png" />
         </Avatar>
         <div className="flex flex-col">
-          <p className="text-sm font-medium">John Doe</p>
-          <p className="text-xs text-muted-foreground">john.doe@example.com</p>
+          <p className="text-sm font-semibold">HEXXT</p>
+          <p className="text-xs text-muted-foreground">hexxt@gmail.com</p>
         </div>
         <Button variant="ghost" size="icon" className="ms-auto">
           <ChevronDown className="size-4" />

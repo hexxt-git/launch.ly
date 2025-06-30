@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AppRouteRouteImport } from './routes/app/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppToolsIdeaGeneratorRouteImport } from './routes/app/tools/idea-generator'
 
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/app',
@@ -28,28 +29,36 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppToolsIdeaGeneratorRoute = AppToolsIdeaGeneratorRouteImport.update({
+  id: '/tools/idea-generator',
+  path: '/tools/idea-generator',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
   '/app/': typeof AppIndexRoute
+  '/app/tools/idea-generator': typeof AppToolsIdeaGeneratorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/app': typeof AppIndexRoute
+  '/app/tools/idea-generator': typeof AppToolsIdeaGeneratorRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
   '/app/': typeof AppIndexRoute
+  '/app/tools/idea-generator': typeof AppToolsIdeaGeneratorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app' | '/app/'
+  fullPaths: '/' | '/app' | '/app/' | '/app/tools/idea-generator'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app'
-  id: '__root__' | '/' | '/app' | '/app/'
+  to: '/' | '/app' | '/app/tools/idea-generator'
+  id: '__root__' | '/' | '/app' | '/app/' | '/app/tools/idea-generator'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -80,15 +89,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/app/tools/idea-generator': {
+      id: '/app/tools/idea-generator'
+      path: '/tools/idea-generator'
+      fullPath: '/app/tools/idea-generator'
+      preLoaderRoute: typeof AppToolsIdeaGeneratorRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
 interface AppRouteRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppToolsIdeaGeneratorRoute: typeof AppToolsIdeaGeneratorRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppToolsIdeaGeneratorRoute: AppToolsIdeaGeneratorRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
