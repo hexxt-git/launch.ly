@@ -12,8 +12,10 @@ function RouteComponent() {
       <Sidebar />
       <div className="relative m-2">
         <Header />
-        <div className="pt-14 overflow-y-auto h-[calc(100vh-1rem)]">
-          <Outlet />
+        <div className="pt-12 overflow-y-auto h-[calc(100vh-1rem)]">
+          <main className="p-4 max-w-4xl">
+            <Outlet />
+          </main>
         </div>
       </div>
     </div>

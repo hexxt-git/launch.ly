@@ -112,11 +112,13 @@ function GlassButton({
   variant,
   size,
   asChild = false,
+  disabled = false,
   ...props
 }: React.ComponentProps<'button'> &
   VariantProps<typeof glassButtonVariants> & {
     asChild?: boolean
     containerClassName?: string
+    disabled?: boolean
   }) {
   const Comp = asChild ? Slot : 'button'
   const variantStyles = getVariantStyles(variant)
@@ -126,6 +128,7 @@ function GlassButton({
       className={cn(
         'relative p-[1px] rounded-md bg-gradient-to-b transition-all duration-300',
         variantStyles.borderGradient,
+        disabled && 'opacity-90 saturate-50 cursor-not-allowed',
         containerClassName,
       )}
     >
