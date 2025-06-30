@@ -42,3 +42,12 @@ export interface PickerConfig {
   items: PickerItem[]
   categories: PickerCategory[]
 }
+
+export type IdeaStep = 'input' | 'filtering' | 'results'
+
+export interface GeneratedIdea {
+  id: string
+  title: string
+  description: string
+  tags: string[]
+}

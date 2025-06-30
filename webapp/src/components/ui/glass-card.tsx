@@ -3,7 +3,7 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const glassCardVariants = cva(
-  'w-full backdrop-blur-sm transition-all duration-300 text-left border border-white/10 hover:border-white/20',
+  'w-full backdrop-blur-sm transition-all duration-300 text-left border-2 border-white/10 hover:border-white/20',
   {
     variants: {
       variant: {
@@ -70,8 +70,6 @@ export interface GlassCardProps
 
 const GlassCard = React.forwardRef<HTMLDivElement, GlassCardProps>(
   ({ className, wrapperClassName, variant, size, interactive, asChild = false, ...props }, ref) => {
-    const Comp = asChild ? React.Fragment : 'div'
-
     const content = (
       <div
         className={cn('size-full', glassCardVariants({ variant, size, interactive, className }))}

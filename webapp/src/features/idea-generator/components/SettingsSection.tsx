@@ -1,5 +1,5 @@
 import { cn } from '@/lib/utils'
-import { Lightbulb, Sparkles, Target, Shield, Zap, Rocket } from 'lucide-react'
+import { Lightbulb, Sparkles, Target, Shield, Zap, Rocket, Crown, DollarSign, BadgeIcon } from 'lucide-react'
 import { GlassBorder } from '@/components/ui/glass-border'
 import { GlassContainer } from '@/components/ui/glass-container'
 import { Settings } from '../types'
@@ -12,30 +12,30 @@ interface SettingsSectionProps {
 export function SettingsSection({ settings, onSettingsChange }: SettingsSectionProps) {
   const settingsConfig = [
     {
-      key: 'creativity' as const,
-      title: 'Creativity Level',
+      key: 'profitability' as const,
+      title: 'Profitability Level',
       icon: Lightbulb,
       options: [
         {
-          key: 'conservative' as const,
-          label: 'Conservative',
-          description: 'Safe, proven approaches',
-          icon: Shield,
-          color: 'blue',
+          key: 'low' as const,
+          label: 'Low',
+          description: 'Low risk, low reward',
+          icon: BadgeIcon,
+          color: 'purple',
         },
         {
-          key: 'balanced' as const,
-          label: 'Balanced',
-          description: 'Mix of safe and creative',
-          icon: Target,
+          key: 'medium' as const,
+          label: 'Medium',
+          description: 'Solid Income, nothing revolutionary',
+          icon: DollarSign,
           color: 'green',
         },
         {
-          key: 'wild' as const,
-          label: 'Wild',
-          description: 'Bold, experimental ideas',
-          icon: Zap,
-          color: 'purple',
+          key: 'high' as const,
+          label: 'High',
+          description: 'High risk, high reward',
+          icon: Crown,
+          color: 'blue',
         },
       ],
     },
@@ -49,7 +49,7 @@ export function SettingsSection({ settings, onSettingsChange }: SettingsSectionP
           label: 'Familiar',
           description: 'Build on existing concepts',
           icon: Shield,
-          color: 'blue',
+          color: 'purple',
         },
         {
           key: 'fresh' as const,
@@ -63,7 +63,7 @@ export function SettingsSection({ settings, onSettingsChange }: SettingsSectionP
           label: 'Revolutionary',
           description: 'Completely novel approaches',
           icon: Rocket,
-          color: 'purple',
+          color: 'blue',
         },
       ],
     },
@@ -73,10 +73,10 @@ export function SettingsSection({ settings, onSettingsChange }: SettingsSectionP
       icon: Target,
       options: [
         {
-          key: 'ambitious' as const,
-          label: 'Ambitious',
-          description: 'Dream big, worry later',
-          icon: Rocket,
+          key: 'practical' as const,
+          label: 'Practical',
+          description: 'Ready to build today',
+          icon: Shield,
           color: 'purple',
         },
         {
@@ -87,10 +87,10 @@ export function SettingsSection({ settings, onSettingsChange }: SettingsSectionP
           color: 'green',
         },
         {
-          key: 'practical' as const,
-          label: 'Practical',
-          description: 'Ready to build today',
-          icon: Shield,
+          key: 'ambitious' as const,
+          label: 'Ambitious',
+          description: 'Dream big, worry later',
+          icon: Rocket,
           color: 'blue',
         },
       ],
