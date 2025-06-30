@@ -1,28 +1,53 @@
-import * as fs from 'node:fs'
 import { createServerFn } from '@tanstack/react-start'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { prisma } from '@/lib/prisma'
+import { z } from 'zod'
 
-const filePath = 'count.txt'
+// Get or create the counter from database
+async function getOrCreateCounter() {
+  // Try to get the first counter
+  let counter = await prisma.counter.findFirst()
 
-async function readCount() {
-  return parseInt(await fs.promises.readFile(filePath, 'utf-8').catch(() => '0'))
+  // If no counter exists, create one with value 0
+  if (!counter) {
+    counter = await prisma.counter.create({
+      data: { value: 0 },
+    })
+  }
+
+  return counter.value
 }
 
 export const getCount = createServerFn({
   method: 'GET',
-}).handler(() => {
-  return readCount()
+}).handler(async () => {
+  return await getOrCreateCounter()
 })
 
 export const updateCount = createServerFn({
   method: 'POST',
 })
-  .validator((d: number) => d)
+  .validator(z.literal(-1).or(z.literal(1)))
   .handler(async ({ data }) => {
-    const count = await readCount()
-    await fs.promises.writeFile(filePath, `${count + data}`)
-    return count + data // Return the new count
+    // Get or create counter
+    let counter = await prisma.counter.findFirst()
+
+    if (!counter) {
+      // Create new counter with the increment value
+      counter = await prisma.counter.create({
+        data: { value: data },
+      })
+    } else {
+      // Update existing counter
+      counter = await prisma.counter.update({
+        where: { id: counter.id },
+        data: { value: counter.value + data },
+      })
+    }
+
+    return counter.value
   })
 
 export function Counter() {
@@ -40,7 +65,7 @@ export function Counter() {
 
   // Use TanStack Query mutation to update the count
   const updateCountMutation = useMutation({
-    mutationFn: (increment: number) => updateCount({ data: increment }),
+    mutationFn: (increment: -1 | 1) => updateCount({ data: increment }),
     onSuccess: () => {
       // Invalidate and refetch the count query
       queryClient.invalidateQueries({ queryKey: ['count'] })
@@ -59,33 +84,51 @@ export function Counter() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-8">
-      <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full text-center">
-        <h1 className="text-3xl font-bold text-gray-800 mb-6">TanStack Query Counter</h1>
-        <div className="mb-8">
-          <p className="text-lg text-gray-600 mb-2">Current count:</p>
-          <div className="text-5xl font-bold text-blue-600">{count}</div>
-        </div>
-        <button
-          type="button"
-          onClick={() => updateCountMutation.mutate(1)}
-          disabled={updateCountMutation.isPending}
-          className={`w-full py-3 px-6 text-lg font-semibold rounded-lg transition-all duration-200 ${
-            updateCountMutation.isPending
-              ? 'bg-gray-400 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700 active:scale-95'
-          } text-white shadow-lg hover:shadow-xl`}
-        >
-          {updateCountMutation.isPending ? (
-            <div className="flex items-center justify-center">
-              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-              Adding...
-            </div>
-          ) : (
-            `Add 1 to ${count}?`
-          )}
-        </button>
-        {updateCountMutation.error && <p className="mt-4 text-red-600 font-medium">Error updating count</p>}
-      </div>
+      <Card className="w-full max-w-md">
+        <CardHeader>
+          <CardTitle className="text-3xl text-center">Counter App</CardTitle>
+          <p className="text-center text-muted-foreground">
+            Powered by Tanstack RPC, Prisma & SQLite • Validated with Zod
+          </p>
+        </CardHeader>
+        <CardContent className="text-center space-y-6">
+          <div className="text-6xl font-bold text-blue-600">{count}</div>
+          <div className="space-y-3">
+            <Button
+              onClick={() => updateCountMutation.mutate(1)}
+              disabled={updateCountMutation.isPending}
+              className="w-full"
+              size="lg"
+            >
+              {updateCountMutation.isPending ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                  Adding...
+                </div>
+              ) : (
+                `Increment (+1)`
+              )}
+            </Button>
+            <Button
+              onClick={() => updateCountMutation.mutate(-1)}
+              disabled={updateCountMutation.isPending}
+              variant="outline"
+              className="w-full"
+              size="lg"
+            >
+              {updateCountMutation.isPending ? (
+                <div className="flex items-center justify-center">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current mr-2"></div>
+                  Subtracting...
+                </div>
+              ) : (
+                `Decrement (-1)`
+              )}
+            </Button>
+          </div>
+          {updateCountMutation.error && <p className="text-red-600 font-medium">Error updating count</p>}
+        </CardContent>
+      </Card>
     </div>
   )
 }
