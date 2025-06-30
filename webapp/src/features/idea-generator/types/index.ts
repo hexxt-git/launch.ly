@@ -11,7 +11,7 @@ export interface TechnologyTag extends Tag {
 export type TechnologyCategory = 'ai' | 'blockchain' | 'cloud' | 'web' | 'mobile' | 'video' | 'other'
 
 export interface Settings {
-  creativity: 'conservative' | 'balanced' | 'wild'
+  profitability: 'low' | 'medium' | 'high'
   novelty: 'familiar' | 'fresh' | 'revolutionary'
   feasibility: 'ambitious' | 'realistic' | 'practical'
 }
@@ -45,9 +45,24 @@ export interface PickerConfig {
 
 export type IdeaStep = 'input' | 'filtering' | 'results'
 
+export interface IdeaAnalytics {
+  profitability: number
+  marketability: number
+  feasibility: number
+  innovation: number
+  scalability: number
+}
+
+export interface IdeaClientData {
+  isLiked: boolean
+  notes: string
+}
+
 export interface GeneratedIdea {
   id: string
   title: string
   description: string
   tags: string[]
+  analytics: IdeaAnalytics
+  clientData: IdeaClientData
 }

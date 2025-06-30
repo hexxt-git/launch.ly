@@ -22,6 +22,17 @@ const generateIdeasFromServer = async (
       description:
         'A community-driven, hyperlocal marketplace platform designed to empower local artisans, small businesses, and solo entrepreneurs by providing them with a digital storefront within their own neighborhoods. The platform connects buyers with trusted, nearby sellers to promote sustainable commerce, build stronger local economies, and reduce environmental impact. Users can browse products and services based on proximity, filter by category (handmade goods, groceries, personal care, home services, etc.), and choose between in-person pickup or same-day delivery through local couriers. Vendors can create customizable shop pages, receive customer reviews, and benefit from built-in tools for inventory management, promotion, and sales analytics.',
       tags: ['marketplace', 'e-commerce', 'ai', 'blockchain'],
+      analytics: {
+        profitability: 80,
+        marketability: 80,
+        feasibility: 80,
+        innovation: 80,
+        scalability: 80,
+      },
+      clientData: {
+        isLiked: false,
+        notes: '',
+      },
     },
     {
       id: '2',
@@ -29,6 +40,17 @@ const generateIdeasFromServer = async (
       description:
         "A comprehensive mobile app that helps environmentally conscious individuals track, understand, and reduce their carbon footprint. The app uses AI to analyze users' daily activities, transportation choices, energy consumption, and purchasing habits to provide personalized insights and actionable recommendations. Users can set sustainability goals, join community challenges, and earn rewards for making eco-friendly choices. The app integrates with smart home devices, fitness trackers, and bank accounts to automatically gather data and provide real-time feedback. EcoTrack also includes a social component where users can compare their progress with friends, share tips, and collaborate on local environmental initiatives.",
       tags: ['sustainability', 'mobile', 'ai', 'data'],
+      analytics: {
+        profitability: 80,
+        marketability: 80,
+        feasibility: 80,
+        innovation: 80,
+        scalability: 80,
+      },
+      clientData: {
+        isLiked: false,
+        notes: '',
+      },
     },
     {
       id: '3',
@@ -36,6 +58,17 @@ const generateIdeasFromServer = async (
       description:
         "An augmented reality application that transforms any physical space into a personalized wellness sanctuary. Users can escape daily stress by immersing themselves in calming, customizable environments overlaid on their actual surroundings. The app offers guided meditation sessions, breathing exercises, and gentle movement practices tailored to the user's current emotional state, available time, and wellness goals. Advanced biometric feedback through smartphone sensors or wearable devices helps optimize the experience and track progress over time. The app includes a library of natural soundscapes, ambient music, and narrations by renowned wellness experts. Perfect for quick mental breaks during work, creating a peaceful bedtime routine, or enhancing regular mindfulness practice.",
       tags: ['health', 'mobile', 'ar', 'wellness'],
+      analytics: {
+        profitability: 80,
+        marketability: 80,
+        feasibility: 80,
+        innovation: 80,
+        scalability: 80,
+      },
+      clientData: {
+        isLiked: false,
+        notes: '',
+      },
     },
     {
       id: '4',
@@ -43,6 +76,17 @@ const generateIdeasFromServer = async (
       description:
         "A peer-to-peer platform that enables users to exchange knowledge and skills without monetary transactions. Users create profiles highlighting what they can teach and what they want to learn, and the platform's matching algorithm connects compatible skill-swappers. The service facilitates both virtual and in-person learning sessions, provides scheduling tools, curriculum templates, and progress tracking. Community ratings and reviews help maintain quality and build trust. The platform supports one-on-one exchanges as well as group workshops and includes features for community building like discussion forums, skill challenges, and collaborative projects. SkillSwap democratizes education by recognizing that everyone has valuable knowledge to share, regardless of formal credentials.",
       tags: ['education', 'community', 'web', 'social'],
+      analytics: {
+        profitability: 80,
+        marketability: 80,
+        feasibility: 80,
+        innovation: 80,
+        scalability: 80,
+      },
+      clientData: {
+        isLiked: false,
+        notes: '',
+      },
     },
     {
       id: '5',
@@ -50,6 +94,17 @@ const generateIdeasFromServer = async (
       description:
         "A smartphone app that uses computer vision and AI to analyze food items and provide detailed nutritional information. Users can scan packaged products, restaurant meals, or even homemade dishes to receive instant data about calories, macronutrients, micronutrients, allergens, and additives. The app considers users' dietary preferences, restrictions, and health goals to provide personalized recommendations and alternatives. For those with specific health conditions like diabetes or hypertension, NutriScan offers specialized monitoring features and alerts. The app builds a comprehensive food diary automatically and generates insights about eating patterns and nutritional gaps. Integration with grocery delivery services allows users to easily order healthier alternatives recommended by the app.",
       tags: ['health', 'ai', 'mobile', 'computer vision'],
+      analytics: {
+        profitability: 80,
+        marketability: 80,
+        feasibility: 80,
+        innovation: 80,
+        scalability: 80,
+      },
+      clientData: {
+        isLiked: false,
+        notes: '',
+      },
     },
   ]
 }
@@ -66,7 +121,7 @@ export function useIdeaGenerator() {
   const [currentModalType, setCurrentModalType] = useState<ModalType>('technology')
 
   const [settings, setSettings] = useState<Settings>({
-    creativity: 'balanced',
+    profitability: 'medium',
     novelty: 'fresh',
     feasibility: 'realistic',
   })
@@ -150,6 +205,13 @@ export function useIdeaGenerator() {
     setTechnologies([])
     setTargetAudiences([])
     setThemes([])
+    setCurrentModalType('technology')
+    setSettings({
+      profitability: 'medium',
+      novelty: 'fresh',
+      feasibility: 'realistic',
+    })
+    setInstruction('Brainstorm ideas for my projects')
   }
 
   // New functions for multi-step process
@@ -241,6 +303,7 @@ export function useIdeaGenerator() {
     setSettings,
     setInstruction,
     setCurrentStep,
+    setLikedIdeas,
 
     // Actions
     removeTag,
