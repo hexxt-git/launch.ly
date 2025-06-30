@@ -19,14 +19,17 @@ Using the details below, develop a distinctive, emotionally resonant brand found
 Please include the following:
 
 1. **Brand Name Suggestions**
+
    - 2–5 creative and relevant name options that reflect the startup’s core purpose.
    - Brief rationale for each, including how it connects to the idea.
 
 2. **Mission Statement**
+
    - A clear, concise sentence that captures the purpose and ambition of the company.
    - Ensure it aligns with the problem the startup is solving.
 
 3. **Core Values**
+
    - 3 to 5 guiding principles that shape the culture, vision, and decisions of the brand.
    - These should be rooted in the unique strengths or aspirations of the startup.
 

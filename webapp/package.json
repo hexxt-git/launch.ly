@@ -11,7 +11,8 @@
     "build": "vite build",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "format": "prettier --config .prettierrc --write ."
   },
   "dependencies": {
     "@langchain/core": "^0.3.61",

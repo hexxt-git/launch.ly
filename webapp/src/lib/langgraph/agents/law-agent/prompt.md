@@ -19,18 +19,21 @@ While this is **not formal legal advice**, your response should highlight key le
 Please provide a high-level review that covers the following:
 
 1. **Intellectual Property (IP)**
+
    - Trademark risks or name conflicts (national or global).
    - Patentability of any innovations.
    - Copyright issues (e.g., use of third-party content, AI-generated material).
-   - Overview of Algeria’s IP laws (e.g., INAPI: *Institut National Algérien de la Propriété Industrielle*).
+   - Overview of Algeria’s IP laws (e.g., INAPI: _Institut National Algérien de la Propriété Industrielle_).
 
 2. **Data Privacy & User Protection**
+
    - What data is collected and stored? Is it personally identifiable?
    - Does the startup need to comply with Algeria’s Law No. 18-07 on the Protection of Individuals in the Processing of Personal Data?
    - Is there any exposure to foreign laws like **GDPR** or **CCPA** (e.g., foreign users, cloud providers)?
    - Consent, data minimization, and retention policies.
 
 3. **Industry-Specific Regulations**
+
    - Are there any sector-specific laws (e.g., health, fintech, education)?
    - Does the startup require licenses or government approval in Algeria?
    - Are there local content hosting rules, cybersecurity regulations, or encryption controls?
@@ -46,7 +49,7 @@ Please provide a high-level review that covers the following:
 - **IP Registration**: Handled by [INAPI](http://www.inapi.org/) – patents, trademarks, industrial designs.
 - **Data Protection Law**: Law No. 18-07 (2018) requires user consent, lawful processing, and rights to access/delete data.
 - **E-commerce & Digital Law**: Regulated by Law No. 18-05, covering digital transactions, electronic contracts, and cybersecurity obligations.
-- **Startup Support**: Algeria offers various incentives for startups through the National Startup Fund (*Algerian Startup Fund – ASF*), but may require compliance with investment, banking, or customs law depending on the business model.
+- **Startup Support**: Algeria offers various incentives for startups through the National Startup Fund (_Algerian Startup Fund – ASF_), but may require compliance with investment, banking, or customs law depending on the business model.
 
 ---
 

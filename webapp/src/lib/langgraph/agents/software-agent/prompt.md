@@ -19,10 +19,12 @@ Analyze the following:
 Your response should include:
 
 1. **Required Tech Stack**
+
    - What technologies, frameworks, and infrastructure are needed?
    - Justify your choices based on scalability, speed, and cost.
 
 2. **Potential Technical Challenges**
+
    - What architectural, integration, or scaling issues may arise?
    - Any known limitations in tools or technologies?
 

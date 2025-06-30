@@ -17,11 +17,13 @@ You are a **Sales Strategist** with expertise in both **B2B and B2C customer acq
 Your response should include:
 
 1. **Ideal Customer Profile (ICP)**
+
    - Who are the target customers (B2B and/or B2C)?
    - What are their key pain points and motivations?
    - Where can they be reached (industry, demographics, job roles, etc.)?
 
 2. **Sales Channels**
+
    - Recommend the best acquisition channels:
      - Direct outreach (email/DM)
      - Strategic partnerships
@@ -30,13 +32,14 @@ Your response should include:
    - Justify your channel choices based on the product, pricing model, and buyer behavior.
 
 3. **Sales Tactics**
+
    - Any early-stage tactics to build credibility and close first deals (e.g., free pilots, testimonials, urgency framing)?
    - Tools and CRM recommendations (if relevant).
 
 4. **Cold Email or Outreach Template**
    - Write a concise, high-converting **email draft** addressed to either:
-     - A potential **first customer**, or  
-     - A potential **early-stage investor**  
+     - A potential **first customer**, or
+     - A potential **early-stage investor**
    - The email should clearly convey the problem, the solution, and a compelling reason to engage.
 
 ---
