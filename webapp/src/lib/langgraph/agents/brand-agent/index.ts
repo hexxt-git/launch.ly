@@ -1,11 +1,12 @@
-// Reusable code for any agent's index.ts
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { HumanMessage, AIMessage } from "@langchain/core/messages";
 import type { IdeaRefinementState } from "../../state";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
 import { working_model } from "../model";
-
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const llm = new ChatGoogleGenerativeAI({
   model: working_model,
   temperature: 0.7,
@@ -16,7 +17,6 @@ const promptTemplate = fs.readFileSync(
   "utf-8"
 );
 
-// Extract the agent's name from its folder path for clear messaging.
 const agentName = path.basename(__dirname).replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
 export const agentNode = async (state: IdeaRefinementState) => {

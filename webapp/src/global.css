@@ -83,6 +83,8 @@
   }
   body {
     @apply bg-background text-foreground;
+    scrollbar-width: thin;
+    scrollbar-color: #a0a0a080 transparent;
   }
 }
 
