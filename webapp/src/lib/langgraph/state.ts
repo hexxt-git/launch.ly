@@ -1,5 +1,4 @@
-import { BaseMessage } from "@langchain/core/messages";
-
+import { BaseMessage } from '@langchain/core/messages';
 export interface IdeaRefinementState {
   idea: string;
   messages: BaseMessage[];
