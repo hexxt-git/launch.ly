@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as Refine_ideeRouteImport } from './routes/refine_idee'
 import { Route as AppRouteRouteImport } from './routes/app/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AppToolsIdeaGeneratorRouteImport } from './routes/app/tools/idea-generator'
 
+const Refine_ideeRoute = Refine_ideeRouteImport.update({
+  id: '/refine_idee',
+  path: '/refine_idee',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/app',
   path: '/app',
@@ -38,11 +44,13 @@ const AppToolsIdeaGeneratorRoute = AppToolsIdeaGeneratorRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
+  '/refine_idee': typeof Refine_ideeRoute
   '/app/': typeof AppIndexRoute
   '/app/tools/idea-generator': typeof AppToolsIdeaGeneratorRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/refine_idee': typeof Refine_ideeRoute
   '/app': typeof AppIndexRoute
   '/app/tools/idea-generator': typeof AppToolsIdeaGeneratorRoute
 }
@@ -50,24 +58,44 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
+  '/refine_idee': typeof Refine_ideeRoute
   '/app/': typeof AppIndexRoute
   '/app/tools/idea-generator': typeof AppToolsIdeaGeneratorRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app' | '/app/' | '/app/tools/idea-generator'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/refine_idee'
+    | '/app/'
+    | '/app/tools/idea-generator'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/app' | '/app/tools/idea-generator'
-  id: '__root__' | '/' | '/app' | '/app/' | '/app/tools/idea-generator'
+  to: '/' | '/refine_idee' | '/app' | '/app/tools/idea-generator'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/refine_idee'
+    | '/app/'
+    | '/app/tools/idea-generator'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRouteRoute: typeof AppRouteRouteWithChildren
+  Refine_ideeRoute: typeof Refine_ideeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/refine_idee': {
+      id: '/refine_idee'
+      path: '/refine_idee'
+      fullPath: '/refine_idee'
+      preLoaderRoute: typeof Refine_ideeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app': {
       id: '/app'
       path: '/app'
@@ -116,6 +144,7 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRouteRoute: AppRouteRouteWithChildren,
+  Refine_ideeRoute: Refine_ideeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

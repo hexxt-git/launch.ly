@@ -15,3 +15,10 @@ model Counter {
   id    Int @id @default(autoincrement())
   value Int @default(0)
 }
+model Project {
+  id         Int      @id @default(autoincrement())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
