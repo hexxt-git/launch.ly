@@ -1,10 +1,9 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Counter } from '../features/counter'
 
 export const Route = createFileRoute('/')({
   component: Home,
 })
 
 function Home() {
-  return <Counter />
+  return <div className="min-h-screen flex flex-col">hellos</div>
 }
