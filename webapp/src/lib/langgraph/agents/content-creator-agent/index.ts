@@ -28,6 +28,7 @@ const promptTemplate = fs.readFileSync(
 const agentName = path.basename(__dirname).replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
 
 export const agentNode = async (state: IdeaRefinementState) => {
+  console.log(`content-creator-agent: Running agent. State: `, state);
   const prompt = promptTemplate
     .replace("{{idea}}", state.idea)
     .replace(
@@ -35,8 +36,10 @@ export const agentNode = async (state: IdeaRefinementState) => {
       state.messages.map((msg) => msg.content).join("\n")
     );
 
+  console.log(`content-creator-agent: Prompt: `, prompt);
   const response = await llm.invoke([new HumanMessage(prompt)]);
 
+  console.log(`content-creator-agent: Response: `, response);
   return {
     messages: [new AIMessage({ content: `${agentName}: ${response.content}` })],
   };

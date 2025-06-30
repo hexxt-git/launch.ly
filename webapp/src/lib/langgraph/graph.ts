@@ -6,15 +6,8 @@ import { agentNode as softwareAgentNode } from "./agents/software-agent";
 import { agentNode as lawAgentNode } from "./agents/law-agent";
 import { agentNode as contentCreatorAgentNode } from "./agents/content-creator-agent";
 import { agentNode as salesAgentNode } from "./agents/sales-agent";
+import { summaryAgentNode } from "./agents/summary-agent";
 
-const MAX_ITERATIONS = 1; 
-
-const shouldContinue = (state: IdeaRefinementState) => {
-  if (state.iteration >= 6) { 
-    return "end";
-  }
-  return "continue";
-};
 
 const ideaWorkflow = new StateGraph<IdeaRefinementState>({
   channels: {
@@ -29,6 +22,11 @@ const ideaWorkflow = new StateGraph<IdeaRefinementState>({
     iteration: {
         value: (x, y) => x + 1,
         default: () => 0
+    },
+    // Add a channel for our new report field
+    report: {
+        value: (x, y) => y,
+        default: () => "",
     }
   },
 });
@@ -39,15 +37,15 @@ ideaWorkflow.addNode("software", softwareAgentNode);
 ideaWorkflow.addNode("law", lawAgentNode);
 ideaWorkflow.addNode("contentCreator", contentCreatorAgentNode);
 ideaWorkflow.addNode("sales", salesAgentNode);
-
+ideaWorkflow.addNode("summary", summaryAgentNode);
+ideaWorkflow.setEntryPoint("marketing");
 ideaWorkflow.addEdge("marketing", "brand");
 ideaWorkflow.addEdge("brand", "software");
 ideaWorkflow.addEdge("software", "law");
 ideaWorkflow.addEdge("law", "contentCreator");
 ideaWorkflow.addEdge("contentCreator", "sales");
-ideaWorkflow.addEdge("sales", END);
-
-ideaWorkflow.setEntryPoint("marketing");
+ideaWorkflow.addEdge("sales", "summary");
+ideaWorkflow.addEdge("summary", END);
 
 
 export const ideaRefinementApp = ideaWorkflow.compile();

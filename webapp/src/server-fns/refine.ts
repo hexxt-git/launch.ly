@@ -1,6 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { ideaRefinementApp } from "../../../lib/langgraph/graph"; 
+import { ideaRefinementApp } from "../lib/langgraph/graph";
 
 const ideaSchema = z.object({
   idea: z.string().min(1, "The idea cannot be empty."),

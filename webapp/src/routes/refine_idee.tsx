@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState } from 'react'
-import { refineIdeaAction } from '../features/refine/actions/refine'
+import { refineIdeaAction } from '../server-fns/refine'
 
 
 
@@ -15,14 +15,18 @@ function RefineIdeeComponent() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const handleSubmit = async (e: React.FormEvent) => {
+
     e.preventDefault(); 
     setIsLoading(true);
     setResult(null);
     setError(null);
 
+
+
     try {
-      const data = await refineIdeaAction({ idea });
-      console.log("Received data from server function:", data);
+      console.log("🚀 Submitting idea for refinement:", idea);
+      const data = await refineIdeaAction({data:{idea}})
+      
       setResult(data);
 
     } catch (err: any) {
