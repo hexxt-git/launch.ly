@@ -1,13 +1,15 @@
 // @ts-nocheck
 import { StateGraph, END } from '@langchain/langgraph'
 import { IdeaRefinementState } from './state'
-import { agentNode as marketingAgentNode } from './agents/marketing-agent'
-import { agentNode as brandAgentNode } from './agents/brand-agent'
-import { agentNode as softwareAgentNode } from './agents/software-agent'
-import { agentNode as lawAgentNode } from './agents/law-agent'
-import { agentNode as contentCreatorAgentNode } from './agents/content-creator-agent'
-import { agentNode as salesAgentNode } from './agents/sales-agent'
-import { summaryAgentNode } from './agents/summary-agent'
+import {
+  marketingAgentNode,
+  brandAgentNode,
+  softwareAgentNode,
+  lawAgentNode,
+  contentCreatorAgentNode,
+  salesAgentNode,
+  summaryAgentNode,
+} from './agents'
 
 const ideaWorkflow = new StateGraph<IdeaRefinementState>({
   channels: {
@@ -31,6 +33,7 @@ const ideaWorkflow = new StateGraph<IdeaRefinementState>({
   },
 })
 
+// Add nodes
 ideaWorkflow.addNode('marketing', marketingAgentNode)
 ideaWorkflow.addNode('brand', brandAgentNode)
 ideaWorkflow.addNode('software', softwareAgentNode)
@@ -38,13 +41,19 @@ ideaWorkflow.addNode('law', lawAgentNode)
 ideaWorkflow.addNode('contentCreator', contentCreatorAgentNode)
 ideaWorkflow.addNode('sales', salesAgentNode)
 ideaWorkflow.addNode('summary', summaryAgentNode)
+
+// Set entry point
 ideaWorkflow.setEntryPoint('marketing')
+
+// Add edges for the main flow
 ideaWorkflow.addEdge('marketing', 'brand')
 ideaWorkflow.addEdge('brand', 'software')
 ideaWorkflow.addEdge('software', 'law')
 ideaWorkflow.addEdge('law', 'contentCreator')
 ideaWorkflow.addEdge('contentCreator', 'sales')
 ideaWorkflow.addEdge('sales', 'summary')
+
+// Add final edge to end
 ideaWorkflow.addEdge('summary', END)
 
 export const ideaRefinementApp = ideaWorkflow.compile()

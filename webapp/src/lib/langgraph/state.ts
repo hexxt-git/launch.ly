@@ -1,7 +1,8 @@
 import { BaseMessage } from '@langchain/core/messages'
-export interface IdeaRefinementState {
+export type IdeaRefinementState = {
   idea: string
-  messages: BaseMessage[]
-  iteration: number
+  messages: { content: string }[]
+  iteration?: number
   report?: string
+  onAgentAction?: (agentName: string, message: string) => Promise<void>
 }
