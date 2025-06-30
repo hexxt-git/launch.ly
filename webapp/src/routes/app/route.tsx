@@ -12,7 +12,7 @@ function RouteComponent() {
       <Sidebar />
       <div className="relative m-2">
         <Header />
-        <div className="pt-14 overflow-y-auto h-screen">
+        <div className="pt-14 overflow-y-auto h-[calc(100vh-1rem)]">
           <Outlet />
         </div>
       </div>
