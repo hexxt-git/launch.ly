@@ -10,12 +10,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Simple counter model
-model Counter {
-  id    Int @id @default(autoincrement())
-  value Int @default(0)
-}
-
 model Project {
   id          String   @id @default(uuid())
   name        String
@@ -52,6 +46,7 @@ model PlannerItem {
   column  PlannerColumn @relation(fields: [columnId], references: [id], onDelete: Cascade)
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 }
+
 model meet {
   id        String @id @default(uuid())
   name      String
