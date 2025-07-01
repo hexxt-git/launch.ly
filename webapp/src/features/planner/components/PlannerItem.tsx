@@ -182,10 +182,31 @@ export function PlannerItem({ item, index, columnId, onMoveItem }: PlannerItemPr
       }}
     >
       <GlassCard
-        className={`p-3 cursor-grab transition-all hover:scale-[1.02] group ${
+        className={`p-3 cursor-grab transition-all hover:scale-[1.02] group relative ${
           isDragging ? 'opacity-50 rotate-2' : ''
         } ${item.completed ? 'opacity-60' : ''}`}
       >
+        {/* Floating action buttons */}
+        <div className="absolute top-2 right-2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+          <GlassButton size="sm" variant="outline" onClick={handleStartEdit} className="h-6 w-6 p-0">
+            <Edit className="size-3" />
+          </GlassButton>
+
+          <GlassButton
+            onClick={handleDelete}
+            size="sm"
+            variant="outline"
+            className="h-6 w-6 p-0 text-red-300 hover:bg-red-500/10"
+          >
+            <Trash2 className="size-3" />
+          </GlassButton>
+
+          <div className="cursor-grab h-6 w-6 flex items-center justify-center">
+            <GripVertical className="size-3 text-white/40" />
+          </div>
+        </div>
+
+        {/* Main content with full width */}
         <div className="flex items-start gap-3">
           <Checkbox
             checked={item.completed}
@@ -211,55 +232,6 @@ export function PlannerItem({ item, index, columnId, onMoveItem }: PlannerItemPr
                 {item.description}
               </p>
             )}
-          </div>
-
-          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-            <GlassButton size="sm" variant="outline" onClick={handleStartEdit}>
-              <Edit className="size-3" />
-            </GlassButton>
-
-            <Dialog open={showDeleteConfirm} onOpenChange={setShowDeleteConfirm}>
-              <DialogTrigger asChild>
-                <GlassButton size="sm" variant="outline" className="text-red-300 hover:bg-red-500/10">
-                  <Trash2 className="size-3" />
-                </GlassButton>
-              </DialogTrigger>
-              <DialogContent className="bg-black/40 backdrop-blur-xl border border-white/20">
-                <DialogHeader>
-                  <DialogTitle className="text-white">Delete Task</DialogTitle>
-                </DialogHeader>
-                <div className="space-y-4">
-                  <p className="text-white/80">
-                    Are you sure you want to delete this task? This action cannot be undone.
-                  </p>
-                  <div className="flex justify-end gap-3">
-                    <GlassButton
-                      variant="outline"
-                      onClick={() => setShowDeleteConfirm(false)}
-                      disabled={isDeleting}
-                    >
-                      Cancel
-                    </GlassButton>
-                    <GlassButton
-                      variant="outline"
-                      onClick={handleDelete}
-                      disabled={isDeleting}
-                      className="text-red-300 border-red-300/20 hover:bg-red-500/10"
-                    >
-                      {isDeleting ? (
-                        <div className="size-4 animate-spin rounded-full border-2 border-red-300/20 border-t-red-300" />
-                      ) : (
-                        'Delete Task'
-                      )}
-                    </GlassButton>
-                  </div>
-                </div>
-              </DialogContent>
-            </Dialog>
-
-            <div className="cursor-grab">
-              <GripVertical className="size-3 text-white/40" />
-            </div>
           </div>
         </div>
       </GlassCard>
