@@ -110,7 +110,7 @@ export function FilteringStep({ ideas, currentIndex, onLike, onReject, onBack }:
           <div className="p-4 h-[500px] flex flex-col border-2 rounded-lg backdrop-blur-sm bg-white/5">
             <h2 className="text-2xl font-bold mb-2">{currentIdea.title}</h2>
             <div className="flex flex-wrap gap-2 mb-4">
-              {currentIdea.tags.map((tag) => (
+              {currentIdea.tags?.map((tag) => (
                 <GlassBadge key={tag}>{tag}</GlassBadge>
               ))}
             </div>

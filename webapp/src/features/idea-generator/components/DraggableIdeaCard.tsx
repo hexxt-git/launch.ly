@@ -7,7 +7,6 @@ import { cn } from '@/lib/utils'
 import { useRef, useState } from 'react'
 import { IdeaAnalytics } from './IdeaAnalytics'
 import { Button } from '@/components/ui/button'
-import { Textarea } from '@/components/ui/textarea'
 import { useNavigate } from '@tanstack/react-router'
 import { createProjectAction } from '@/server-fns/projects'
 import { toast } from 'sonner'
@@ -74,7 +73,7 @@ export function DraggableIdeaCard({ idea, index, moveCard, onUpdateClientData }:
         description: 'Redirecting to project refinement...',
       })
       setTimeout(() => {
-        navigate({ to: '/app/refine_idea/$projectId', params: { projectId: project.id } })
+        navigate({ to: '/app/projects/$projectId/refine_idea', params: { projectId: project.id } })
       }, 1000)
     } catch (error) {
       console.error('Error saving project:', error)
@@ -97,8 +96,8 @@ export function DraggableIdeaCard({ idea, index, moveCard, onUpdateClientData }:
             </div>
             <div className="flex-1">
               <h3 className="text-xl font-bold">{idea.title}</h3>
-              <div className="flex gap-2 mt-2">
-                {idea.tags.map((tag) => (
+              <div className="flex flex-wrap gap-2 mt-2">
+                {idea.tags?.map((tag) => (
                   <GlassBadge key={tag}>{tag}</GlassBadge>
                 ))}
               </div>

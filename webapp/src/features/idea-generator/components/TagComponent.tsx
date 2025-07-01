@@ -13,9 +13,9 @@ export function TagComponent({ tag, onRemove }: TagComponentProps) {
     <GlassButton>
       <span>{tag.text}</span>
       {onRemove && (
-        <Button variant="ghost" size="icon" className="h-4 w-4" onClick={onRemove}>
+        <span className="rounded-full hover:bg-white/10 p-1" onClick={onRemove}>
           <X className="h-3 w-3" />
-        </Button>
+        </span>
       )}
     </GlassButton>
   )
