@@ -1,8 +1,8 @@
-# 🚀 launch.ly
+#  launch.ly
 
 **launch.ly** is an AI-native application that transforms a single startup idea into a fully refined concept with an actionable execution plan. It uses a sophisticated, two-stage multi-agent system to simulate a team of expert collaborators, guided by human interaction.
 
-## ✨ Core Features
+##  Core Features
 
 * **AI-Powered Idea Refinement:** Leverages a "Refinement Council" of specialized AI agents to analyze an idea from every critical angle (marketing, legal, technical, etc.).
 * **Live Collaboration Showcase:** A real-time streaming UI that visualizes the agent collaboration, showing which agent is "thinking" and displaying their insights as they are generated.
