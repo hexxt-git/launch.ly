@@ -20,7 +20,7 @@ const glassBadgeVariants = cva(
       size: {
         default: 'px-2.5 py-0.5',
         sm: 'px-2 py-0.5 text-[10px]',
-        lg: 'px-3 py-1',
+        lg: 'px-3 py-1 text-sm',
       },
     },
     defaultVariants: {

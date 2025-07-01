@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect } from 'react'
 import '../global.css'
 import { Toaster } from '@/components/ui/sonner'
+import { ProjectsProvider } from '@/features/navigation/ProjectsContext'
 
 // Create a client
 const queryClient = new QueryClient({
@@ -46,8 +47,10 @@ function RootComponent() {
   return (
     <RootDocument>
       <QueryClientProvider client={queryClient}>
-        <Outlet />
-        <Toaster />
+        <ProjectsProvider>
+          <Outlet />
+          <Toaster />
+        </ProjectsProvider>
       </QueryClientProvider>
     </RootDocument>
   )

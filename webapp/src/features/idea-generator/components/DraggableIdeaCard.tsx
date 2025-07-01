@@ -2,62 +2,89 @@ import { GlassCard } from '@/components/ui/glass-card'
 import { GlassBadge } from '@/components/ui'
 import { GeneratedIdea, IdeaClientData } from '../types'
 import { useDrag, useDrop } from 'react-dnd'
-import { GripVertical, Heart, MessageSquare } from 'lucide-react'
+import { GripVertical, Heart, MessageSquare, ArrowRight } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useRef, useState } from 'react'
 import { IdeaAnalytics } from './IdeaAnalytics'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
+import { useNavigate } from '@tanstack/react-router'
+import { createProjectAction } from '@/server-fns/projects'
+import { toast } from 'sonner'
 
 interface DraggableIdeaCardProps {
   idea: GeneratedIdea
   index: number
   moveCard: (dragIndex: number, hoverIndex: number) => void
-  onUpdateClientData?: (id: string, data: IdeaClientData) => void
+  onUpdateClientData: (id: string, data: IdeaClientData) => void
 }
 
 export function DraggableIdeaCard({ idea, index, moveCard, onUpdateClientData }: DraggableIdeaCardProps) {
+  const navigate = useNavigate()
   const ref = useRef<HTMLDivElement>(null)
   const [isNotesOpen, setIsNotesOpen] = useState(false)
 
-  const [{ isDragging }, drag, dragPreview] = useDrag({
-    type: 'idea-card',
-    item: { index },
+  const [{ isDragging }, drag] = useDrag({
+    type: 'IDEA_CARD',
+    item: { id: idea.id, index },
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
     }),
   })
 
   const [, drop] = useDrop({
-    accept: 'idea-card',
-    hover: (item: { index: number }) => {
-      if (item.index === index) return
-      moveCard(item.index, index)
-      item.index = index
+    accept: 'IDEA_CARD',
+    hover(item: { id: string; index: number }, monitor) {
+      if (!ref.current) return
+
+      const dragIndex = item.index
+      const hoverIndex = index
+
+      if (dragIndex === hoverIndex) return
+
+      const hoverBoundingRect = ref.current?.getBoundingClientRect()
+      const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2
+      const clientOffset = monitor.getClientOffset()
+      const hoverClientY = clientOffset!.y - hoverBoundingRect.top
+
+      if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) return
+      if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) return
+
+      moveCard(dragIndex, hoverIndex)
+      item.index = hoverIndex
     },
   })
 
-  // Combine the refs
-  drag(ref)
-  drop(ref)
-
   const toggleLike = () => {
-    if (onUpdateClientData) {
-      onUpdateClientData(idea.id, {
-        ...idea.clientData,
-        isLiked: !idea.clientData.isLiked,
+    onUpdateClientData(idea.id, {
+      ...idea.clientData,
+      isLiked: !idea.clientData.isLiked,
+    })
+  }
+
+  const handleSaveAsProject = async () => {
+    try {
+      const project = await createProjectAction({
+        data: {
+          name: idea.title,
+          description: idea.description,
+        },
+      })
+      toast.success('Project created successfully!', {
+        description: 'Redirecting to project refinement...',
+      })
+      setTimeout(() => {
+        navigate({ to: '/app/refine_idea/$projectId', params: { projectId: project.id } })
+      }, 1000)
+    } catch (error) {
+      console.error('Error saving project:', error)
+      toast.error('Failed to create project', {
+        description: 'Please try again later.',
       })
     }
   }
 
-  const updateNotes = (notes: string) => {
-    if (onUpdateClientData) {
-      onUpdateClientData(idea.id, {
-        ...idea.clientData,
-        notes,
-      })
-    }
-  }
+  drag(drop(ref))
 
   return (
     <div ref={ref} className={cn('transition-opacity', isDragging && 'opacity-50')}>
@@ -96,6 +123,15 @@ export function DraggableIdeaCard({ idea, index, moveCard, onUpdateClientData }:
               >
                 <Heart className="size-5" fill={idea.clientData.isLiked ? 'currentColor' : 'none'} />
               </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="hover:text-green-400"
+                onClick={handleSaveAsProject}
+                title="Save as project"
+              >
+                <ArrowRight className="size-5" />
+              </Button>
             </div>
           </div>
 
@@ -111,12 +147,17 @@ export function DraggableIdeaCard({ idea, index, moveCard, onUpdateClientData }:
 
           {/* Notes */}
           {isNotesOpen && (
-            <div className="mt-2">
-              <Textarea
-                placeholder="Add your notes here..."
+            <div className="mt-4">
+              <textarea
+                className="w-full h-24 p-3 rounded-lg bg-white/5 border border-white/10 text-white/90 placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-white/20 resize-none"
+                placeholder="Add notes about this idea..."
                 value={idea.clientData.notes}
-                onChange={(e) => updateNotes(e.target.value)}
-                className="min-h-[100px] bg-white/5"
+                onChange={(e) =>
+                  onUpdateClientData(idea.id, {
+                    ...idea.clientData,
+                    notes: e.target.value,
+                  })
+                }
               />
             </div>
           )}

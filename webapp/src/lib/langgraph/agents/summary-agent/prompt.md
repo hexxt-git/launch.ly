@@ -2,21 +2,21 @@ You are a project manager and expert analyst. Your job is to create a final, cle
 
 Use the full conversation history below to synthesize the key outcomes.
 
-The report should be in Markdown format and must include the following sections with the exact formatting (using ### for headers):
+Create a concise report with these sections:
 
 ### Final Refined Idea
 
-A clear, one-paragraph summary of the final startup concept.
+One-paragraph summary of the startup concept.
 
 ### Key Insights & Feedback
 
-A bulleted list summarizing the single most important point from each expert (Marketing, Brand, Software, etc.).
+- List the most important point from each expert
 
 ### Actionable Next Steps
 
-A short, numbered list of the immediate next actions the user should take based on the discussion.
+1. List 2-3 immediate actions
 
-Full Discussion History:
+History:
 {{history}}
 
 Generate the Markdown report now.
