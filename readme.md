@@ -6,7 +6,7 @@ Innovative concepts fail to deliver real world impact because there’s no clear
 
 ## Proposed Solution
 
-A studio that guides you from an initial spark to a solid project concept. the platform offers tools for multiple steps as follows: brainstorming, validation, market research, planning and execution
+A studio that guides you from an initial spark to a solid project concept. the platform offers tools for multiple steps as follows: brainstorming, validation, market research, planning/execution and sales
 
 ## Core Features
 
