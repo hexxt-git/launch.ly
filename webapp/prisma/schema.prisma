@@ -1,0 +1,60 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Simple counter model
+model Counter {
+  id    Int @id @default(autoincrement())
+  value Int @default(0)
+}
+
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  
+  // Relations
+  plannerColumns PlannerColumn[]
+  plannerItems   PlannerItem[]
+}
+
+model PlannerColumn {
+  id        String @id @default(uuid())
+  title     String
+  order     Int    @default(0)
+  projectId String
+  
+  // Relations
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  items   PlannerItem[]
+}
+
+model PlannerItem {
+  id          String  @id @default(uuid())
+  title       String
+  description String?
+  completed   Boolean @default(false)
+  order       Int     @default(0)
+  columnId    String
+  projectId   String
+  
+  // Relations
+  column  PlannerColumn @relation(fields: [columnId], references: [id], onDelete: Cascade)
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+model meet {
+  id        String @id @default(uuid())
+  name      String
+  contact String?
+  startTime DateTime
+}

@@ -1,0 +1,101 @@
+version: '3.8'
+
+
+x-app-env: &app-env
+  PYTHONUNBUFFERED: 1
+  MONGODB_URL: mongodb://mongo:27017/schedule_db
+  POSTGRES_DSN: postgresql://user:password@postgres:5432/scheduler_buckets
+  KAFKA_BROKERS: kafka:9092
+
+services:
+  api:
+    build: .
+    image: chronoz-engine-app:latest
+    container_name: chronos_api
+    command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    volumes:
+      - ./app:/usr/src/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - mongo
+      - kafka
+    environment: *app-env 
+    networks:
+      - scheduler_network
+
+  workers:
+    build: .
+    image: chronos-engine-app:latest
+    container_name: chronos_all_in_one_worker
+    command: python -m workers.main_worker 
+    restart: always
+    depends_on:
+      - postgres
+      - mongo
+      - kafka
+    environment: *app-env 
+    networks:
+      - scheduler_network
+
+  postgres:
+    image: postgres:15
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: scheduler_buckets
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    networks:
+      - scheduler_network
+
+  mongo:
+    image: mongo:6.0
+    container_name: mongo_db
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: schedule_db
+    networks:
+      - scheduler_network
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.2
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - scheduler_network
+
+  kafka:
+    image: confluentinc/cp-kafka:7.3.2
+    container_name: kafka_broker
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+    networks:
+      - scheduler_network
+
+volumes:
+  postgres_data:
+  mongo_data:
+
+networks:
+  scheduler_network:
+    driver: bridge
