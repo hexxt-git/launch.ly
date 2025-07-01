@@ -42,7 +42,6 @@ This is the initial "think tank." Its goal is to take a raw idea and forge it in
 
 
 ### The Human Interaction Gate
-
 This is the most important step. The system does not proceed automatically.
 
 
