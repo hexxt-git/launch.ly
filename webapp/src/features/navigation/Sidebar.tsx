@@ -66,13 +66,7 @@ export function Sidebar() {
         </div>
       ) : projects.length === 0 ? (
         <div className="text-center py-4">
-          <p className="text-muted-foreground">No projects yet</p>
-          <Link to="/app/tools/idea-generator">
-            <Button variant="ghost" size="sm" className="mt-2 gap-2">
-              <Sparkles className="size-4" />
-              Generate an Idea
-            </Button>
-          </Link>
+          <p className="text-muted-foreground/80">No projects yet</p>
         </div>
       ) : (
         projects.map((project) => {
@@ -89,7 +83,7 @@ export function Sidebar() {
                 <div className="flex-1 min-w-0">
                   <div className="truncate">{project.name}</div>
                   <div className="text-xs text-muted-foreground">
-                    {format(new Date(project.updatedAt), 'MMM d, yyyy')}
+                    {format(new Date(project.updatedAt), 'MMM d, yyyy hh:mm')}
                   </div>
                 </div>
               </Button>

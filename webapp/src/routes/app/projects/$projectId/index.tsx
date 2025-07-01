@@ -5,7 +5,7 @@ import { GlassPanel } from '@/components/ui/glass-panel'
 import { GlassCard } from '@/components/ui/glass-card'
 import { GlassButton } from '@/components/ui/glass-button'
 import { Link } from '@tanstack/react-router'
-import { ArrowRight, ListTodo } from 'lucide-react'
+import { ArrowRight, ListTodo, Edit } from 'lucide-react'
 import { IdeaHeader } from '@/features/idea-generator/components/IdeaHeader'
 import Markdown from 'react-markdown'
 
@@ -60,6 +60,12 @@ function ProjectReader() {
         subtitle="View and edit your idea"
         right={
           <>
+            <Link to="/app/projects/$projectId/edit" params={{ projectId: project.id }}>
+              <GlassButton size="sm" className="gap-2 me-2">
+                <Edit className="size-4" />
+                Edit Project
+              </GlassButton>
+            </Link>
             <Link to="/app/projects/$projectId/planner" params={{ projectId: project.id }}>
               <GlassButton size="sm" className="gap-2 me-2">
                 <ListTodo className="size-4" />

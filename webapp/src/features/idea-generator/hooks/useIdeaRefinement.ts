@@ -72,5 +72,6 @@ export function useIdeaRefinement() {
     reset,
     openMessageIndex,
     handleMessageClick,
+    data,
   }
 }

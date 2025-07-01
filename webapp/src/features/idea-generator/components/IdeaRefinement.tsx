@@ -22,8 +22,17 @@ interface IdeaRefinementProps {
 export function IdeaRefinement({ projectId, projectName, projectDescription }: IdeaRefinementProps) {
   const navigate = useNavigate()
   const { invalidateProjects } = useProjects()
-  const { refineIdea, messages, report, isLoading, error, reset, openMessageIndex, handleMessageClick } =
-    useIdeaRefinement()
+  const {
+    refineIdea,
+    messages,
+    report,
+    isLoading,
+    error,
+    reset,
+    openMessageIndex,
+    handleMessageClick,
+    data,
+  } = useIdeaRefinement()
 
   const hasStarted = messages.length > 0 || isLoading
 
@@ -33,19 +42,46 @@ export function IdeaRefinement({ projectId, projectName, projectDescription }: I
 
   const { mutate: saveProject, isPending: isSaving } = useMutation({
     mutationFn: async () => {
+      // Only proceed with refinement if we have a refined idea
+      if (!data?.idea) {
+        // If no refinement, use original values
+        if (projectId) {
+          return updateProjectAction({
+            data: {
+              projectId,
+              name: projectName,
+              description: projectDescription,
+            },
+          })
+        } else {
+          return createProjectAction({
+            data: {
+              name: projectName,
+              description: projectDescription,
+            },
+          })
+        }
+      }
+
+      // Parse the refined idea into name and description
+      const refinedIdea = data.idea
+      const [refinedName, ...descriptionParts] = refinedIdea.split('\n\n')
+      const finalName = refinedName.replace('Project Name: ', '').trim()
+      const finalDescription = descriptionParts.join('\n\n').replace('Project Description: ', '').trim()
+
       if (projectId) {
         return updateProjectAction({
           data: {
             projectId,
-            name: projectName,
-            description: projectDescription,
+            name: finalName,
+            description: finalDescription,
           },
         })
       } else {
         return createProjectAction({
           data: {
-            name: projectName,
-            description: projectDescription,
+            name: finalName,
+            description: finalDescription,
           },
         })
       }
@@ -149,6 +185,17 @@ export function IdeaRefinement({ projectId, projectName, projectDescription }: I
               </div>
             </GlassCard>
           </div>
+        </>
+      )}
+
+      {data?.idea && (
+        <>
+          <h2 className="text-xl font-bold text-white mb-2">Refined Idea</h2>
+          <GlassCard className="p-6">
+            <div className="prose-sm prose-invert max-w-none">
+              <ReactMarkdown>{data.idea}</ReactMarkdown>
+            </div>
+          </GlassCard>
         </>
       )}
 

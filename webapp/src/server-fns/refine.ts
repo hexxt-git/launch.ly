@@ -10,6 +10,7 @@ export type RefineIdeaResponse = {
   success: boolean
   messages: any[]
   report: string | null
+  idea: string
   error?: string
 }
 
@@ -17,8 +18,6 @@ export const refineIdeaAction = createServerFn()
   .validator(ideaSchema)
   .handler(async ({ data }): Promise<RefineIdeaResponse> => {
     try {
-      console.log('Server Function: Invoking the AI agent workflow...')
-
       const finalState = await ideaRefinementApp.invoke(
         {
           idea: data.idea,
@@ -40,6 +39,7 @@ export const refineIdeaAction = createServerFn()
         success: true,
         messages: finalState.messages,
         report: finalState.report,
+        idea: finalState.idea,
       }
     } catch (error) {
       console.error('💥 Server Function: Error details:', {
@@ -52,6 +52,7 @@ export const refineIdeaAction = createServerFn()
         success: false,
         messages: [],
         report: null,
+        idea: '',
         error: error instanceof Error ? error.message : 'An unknown error occurred',
       }
     }

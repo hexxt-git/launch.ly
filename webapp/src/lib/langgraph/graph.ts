@@ -14,7 +14,7 @@ import {
 const ideaWorkflow = new StateGraph<IdeaRefinementState>({
   channels: {
     idea: {
-      value: (x, y) => y,
+      value: (x, y) => y || x,
       default: () => '',
     },
     messages: {

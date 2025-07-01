@@ -17,6 +17,7 @@ import { Route as AppToolsIdeaGeneratorRouteImport } from './routes/app/tools/id
 import { Route as AppProjectsProjectIdIndexRouteImport } from './routes/app/projects/$projectId/index'
 import { Route as AppProjectsProjectIdRefine_ideaRouteImport } from './routes/app/projects/$projectId/refine_idea'
 import { Route as AppProjectsProjectIdPlannerRouteImport } from './routes/app/projects/$projectId/planner'
+import { Route as AppProjectsProjectIdEditRouteImport } from './routes/app/projects/$projectId/edit'
 
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/app',
@@ -61,6 +62,12 @@ const AppProjectsProjectIdPlannerRoute =
     path: '/projects/$projectId/planner',
     getParentRoute: () => AppRouteRoute,
   } as any)
+const AppProjectsProjectIdEditRoute =
+  AppProjectsProjectIdEditRouteImport.update({
+    id: '/projects/$projectId/edit',
+    path: '/projects/$projectId/edit',
+    getParentRoute: () => AppRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/app/tools/idea-generator': typeof AppToolsIdeaGeneratorRoute
   '/app/projects': typeof AppProjectsIndexRoute
+  '/app/projects/$projectId/edit': typeof AppProjectsProjectIdEditRoute
   '/app/projects/$projectId/planner': typeof AppProjectsProjectIdPlannerRoute
   '/app/projects/$projectId/refine_idea': typeof AppProjectsProjectIdRefine_ideaRoute
   '/app/projects/$projectId': typeof AppProjectsProjectIdIndexRoute
@@ -77,6 +85,7 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/app/tools/idea-generator': typeof AppToolsIdeaGeneratorRoute
   '/app/projects': typeof AppProjectsIndexRoute
+  '/app/projects/$projectId/edit': typeof AppProjectsProjectIdEditRoute
   '/app/projects/$projectId/planner': typeof AppProjectsProjectIdPlannerRoute
   '/app/projects/$projectId/refine_idea': typeof AppProjectsProjectIdRefine_ideaRoute
   '/app/projects/$projectId': typeof AppProjectsProjectIdIndexRoute
@@ -88,6 +97,7 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/app/tools/idea-generator': typeof AppToolsIdeaGeneratorRoute
   '/app/projects/': typeof AppProjectsIndexRoute
+  '/app/projects/$projectId/edit': typeof AppProjectsProjectIdEditRoute
   '/app/projects/$projectId/planner': typeof AppProjectsProjectIdPlannerRoute
   '/app/projects/$projectId/refine_idea': typeof AppProjectsProjectIdRefine_ideaRoute
   '/app/projects/$projectId/': typeof AppProjectsProjectIdIndexRoute
@@ -100,6 +110,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/tools/idea-generator'
     | '/app/projects'
+    | '/app/projects/$projectId/edit'
     | '/app/projects/$projectId/planner'
     | '/app/projects/$projectId/refine_idea'
     | '/app/projects/$projectId'
@@ -109,6 +120,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/app/tools/idea-generator'
     | '/app/projects'
+    | '/app/projects/$projectId/edit'
     | '/app/projects/$projectId/planner'
     | '/app/projects/$projectId/refine_idea'
     | '/app/projects/$projectId'
@@ -119,6 +131,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/app/tools/idea-generator'
     | '/app/projects/'
+    | '/app/projects/$projectId/edit'
     | '/app/projects/$projectId/planner'
     | '/app/projects/$projectId/refine_idea'
     | '/app/projects/$projectId/'
@@ -187,6 +200,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProjectsProjectIdPlannerRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/app/projects/$projectId/edit': {
+      id: '/app/projects/$projectId/edit'
+      path: '/projects/$projectId/edit'
+      fullPath: '/app/projects/$projectId/edit'
+      preLoaderRoute: typeof AppProjectsProjectIdEditRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
   }
 }
 
@@ -194,6 +214,7 @@ interface AppRouteRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppToolsIdeaGeneratorRoute: typeof AppToolsIdeaGeneratorRoute
   AppProjectsIndexRoute: typeof AppProjectsIndexRoute
+  AppProjectsProjectIdEditRoute: typeof AppProjectsProjectIdEditRoute
   AppProjectsProjectIdPlannerRoute: typeof AppProjectsProjectIdPlannerRoute
   AppProjectsProjectIdRefine_ideaRoute: typeof AppProjectsProjectIdRefine_ideaRoute
   AppProjectsProjectIdIndexRoute: typeof AppProjectsProjectIdIndexRoute
@@ -203,6 +224,7 @@ const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppToolsIdeaGeneratorRoute: AppToolsIdeaGeneratorRoute,
   AppProjectsIndexRoute: AppProjectsIndexRoute,
+  AppProjectsProjectIdEditRoute: AppProjectsProjectIdEditRoute,
   AppProjectsProjectIdPlannerRoute: AppProjectsProjectIdPlannerRoute,
   AppProjectsProjectIdRefine_ideaRoute: AppProjectsProjectIdRefine_ideaRoute,
   AppProjectsProjectIdIndexRoute: AppProjectsProjectIdIndexRoute,

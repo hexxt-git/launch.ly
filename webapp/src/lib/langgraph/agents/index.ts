@@ -1,4 +1,5 @@
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
+import { GoogleGenAI, Type } from '@google/genai'
 import { HumanMessage, AIMessage } from '@langchain/core/messages'
 import type { IdeaRefinementState } from '../state'
 import fs from 'fs'
@@ -61,6 +62,55 @@ const createAgentNode = (agentType: AgentType) => {
   }
 }
 
+async function extractFinalIdea(report: string) {
+  const ai = new GoogleGenAI({
+    apiKey: process.env.GOOGLE_API_KEY || '',
+  })
+
+  const config = {
+    thinkingConfig: {
+      thinkingBudget: -1,
+    },
+    responseMimeType: 'application/json',
+    responseSchema: {
+      type: Type.OBJECT,
+      properties: {
+        name: {
+          type: Type.STRING,
+        },
+        description: {
+          type: Type.STRING,
+        },
+      },
+    },
+  }
+
+  const contents = [
+    {
+      role: 'user',
+      parts: [
+        {
+          text: `Extract the final refined idea from this report:\n${report}`,
+        },
+      ],
+    },
+  ]
+
+  const genaiResponse = await ai.models.generateContent({
+    model: 'gemini-2.5-flash',
+    config,
+    contents,
+  })
+
+  const responseText = genaiResponse.candidates?.[0]?.content?.parts?.[0]?.text
+  if (!responseText) {
+    throw new Error('Failed to get response from Gemini')
+  }
+
+  const extracted = JSON.parse(responseText)
+  return `Project Name: ${extracted.name}\n\nProject Description: ${extracted.description}`
+}
+
 // Create the summary agent separately since it has a different return type
 const createSummaryNode = () => {
   const agentDir = path.join(__dirname, 'summary-agent')
@@ -81,8 +131,12 @@ const createSummaryNode = () => {
       promptTemplate.replace('{{history}}', formattedHistory)
 
     const response = await llm.invoke([new HumanMessage(prompt)])
+    const summaryResponse = response.content.toString()
+    const refinedIdea = await extractFinalIdea(summaryResponse)
+
     return {
-      report: response.content,
+      report: summaryResponse,
+      idea: refinedIdea,
     }
   }
 }
