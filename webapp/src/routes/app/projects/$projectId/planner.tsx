@@ -34,7 +34,7 @@ function PlannerComponent() {
 
   if (!project) {
     return (
-      <div className="min-h-screen p-4 flex flex-col items-center justify-center">
+      <div className="h-full p-4 flex flex-col items-center justify-center">
         <GlassPanel className="max-w-4xl">
           <div className="text-center">
             {error ? (

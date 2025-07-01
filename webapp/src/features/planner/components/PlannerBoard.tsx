@@ -61,7 +61,7 @@ export function PlannerBoard({ projectId, projectName, projectDescription }: Pla
 
   if (loading) {
     return (
-      <div className="min-h-screen p-4 flex flex-col items-center justify-center">
+      <div className="h-full p-4 flex flex-col items-center justify-center">
         <GlassPanel className="max-w-4xl">
           <div className="text-center">
             <p className="text-white/60">Loading planner...</p>
@@ -73,7 +73,7 @@ export function PlannerBoard({ projectId, projectName, projectDescription }: Pla
 
   if (error) {
     return (
-      <div className="min-h-screen p-4 flex flex-col items-center justify-center">
+      <div className="h-full p-4 flex flex-col items-center justify-center">
         <GlassPanel className="max-w-4xl">
           <div className="text-center">
             <p className="text-red-300">Error: {error}</p>
