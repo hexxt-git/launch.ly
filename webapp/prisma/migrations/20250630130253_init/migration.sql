@@ -1,5 +1,0 @@
--- CreateTable
-CREATE TABLE "Counter" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "value" INTEGER NOT NULL DEFAULT 0
-);

@@ -144,7 +144,7 @@ export function SettingsSection({ settings, onSettingsChange }: SettingsSectionP
                     <GlassContainer
                       rounded="xl"
                       className={cn(
-                        'p-4 cursor-pointer transition-all duration-300 text-left',
+                        'p-4 cursor-pointer transition-all duration-300 text-left h-full',
                         'border border-white/10 hover:border-white/20',
                         isSelected ? colors.bg : 'hover:bg-white/5',
                       )}

@@ -6,67 +6,53 @@ const ideaSchema = z.object({
   idea: z.string().min(1, 'The idea cannot be empty.'),
 })
 
-// Helper to create a streaming response
-function createStream() {
-  const stream = new TransformStream()
-  const writer = stream.writable.getWriter()
-  const encoder = new TextEncoder()
-
-  return {
-    stream: stream.readable,
-    write: async (data: any) => {
-      await writer.write(encoder.encode(JSON.stringify(data) + '\n'))
-    },
-    close: () => writer.close(),
-  }
+export type RefineIdeaResponse = {
+  success: boolean
+  messages: any[]
+  report: string | null
+  error?: string
 }
 
-export const refineIdeaAction = createServerFn({
-  method: 'POST',
-  response: 'raw', // Use raw response mode for streaming
-})
+export const refineIdeaAction = createServerFn()
   .validator(ideaSchema)
-  .handler(async ({ data }) => {
-    console.log('✅ Server Function: Received idea:', data.idea)
+  .handler(async ({ data }): Promise<RefineIdeaResponse> => {
+    try {
+      console.log('Server Function: Invoking the AI agent workflow...')
 
-    const { stream, write, close } = createStream()
-
-    // Start processing in the background
-    ;(async () => {
-      try {
-        console.log('🚀 Server Function: Invoking the AI agent workflow...')
-        const finalState = await ideaRefinementApp.invoke(
-          {
-            idea: data.idea,
-            messages: [],
-            onAgentAction: async (agentName: string, message: string) => {
-              await write({ type: 'agent_message', agentName, message })
-            },
+      const finalState = await ideaRefinementApp.invoke(
+        {
+          idea: data.idea,
+          messages: [],
+          onAgentAction: async (agentName: string, message: string) => {
+            console.log(`🗣️ [${agentName}] Processing message:`, {
+              timestamp: new Date().toISOString(),
+              length: message.length,
+              preview: message.slice(0, 100) + '...',
+            })
           },
-          {
-            recursionLimit: 100,
-          },
-        )
+        },
+        {
+          recursionLimit: 100,
+        },
+      )
 
-        // Send final state
-        await write({ type: 'complete', data: finalState })
-        console.log('✅ Server Function: AI workflow complete.')
-      } catch (error) {
-        console.error('❌ Server Function: Error during LangGraph invocation:', error)
-        await write({
-          type: 'error',
-          message: 'Failed to refine the idea due to a server error.',
-        })
-      } finally {
-        await close()
+      return {
+        success: true,
+        messages: finalState.messages,
+        report: finalState.report,
       }
-    })()
-
-    return new Response(stream, {
-      headers: {
-        'Content-Type': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-        Connection: 'keep-alive',
-      },
-    })
+    } catch (error) {
+      console.error('💥 Server Function: Error details:', {
+        name: error instanceof Error ? error.name : 'Unknown Error',
+        message: error instanceof Error ? error.message : String(error),
+        stack: error instanceof Error ? error.stack : undefined,
+      })
+      console.error('❌ Server Function: Error during LangGraph invocation:', error)
+      return {
+        success: false,
+        messages: [],
+        report: null,
+        error: error instanceof Error ? error.message : 'An unknown error occurred',
+      }
+    }
   })

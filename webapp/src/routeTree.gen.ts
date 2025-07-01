@@ -9,23 +9,15 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as Refine_ideeRouteImport } from './routes/refine_idee'
-import { Route as Agent_talkRouteImport } from './routes/agent_talk'
 import { Route as AppRouteRouteImport } from './routes/app/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AppProjectsIndexRouteImport } from './routes/app/projects/index'
 import { Route as AppToolsIdeaGeneratorRouteImport } from './routes/app/tools/idea-generator'
+import { Route as AppProjectsProjectIdIndexRouteImport } from './routes/app/projects/$projectId/index'
+import { Route as AppProjectsProjectIdRefine_ideaRouteImport } from './routes/app/projects/$projectId/refine_idea'
+import { Route as AppProjectsProjectIdPlannerRouteImport } from './routes/app/projects/$projectId/planner'
 
-const Refine_ideeRoute = Refine_ideeRouteImport.update({
-  id: '/refine_idee',
-  path: '/refine_idee',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Agent_talkRoute = Agent_talkRouteImport.update({
-  id: '/agent_talk',
-  path: '/agent_talk',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AppRouteRoute = AppRouteRouteImport.update({
   id: '/app',
   path: '/app',
@@ -41,85 +33,104 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppProjectsIndexRoute = AppProjectsIndexRouteImport.update({
+  id: '/projects/',
+  path: '/projects/',
+  getParentRoute: () => AppRouteRoute,
+} as any)
 const AppToolsIdeaGeneratorRoute = AppToolsIdeaGeneratorRouteImport.update({
   id: '/tools/idea-generator',
   path: '/tools/idea-generator',
   getParentRoute: () => AppRouteRoute,
 } as any)
+const AppProjectsProjectIdIndexRoute =
+  AppProjectsProjectIdIndexRouteImport.update({
+    id: '/projects/$projectId/',
+    path: '/projects/$projectId/',
+    getParentRoute: () => AppRouteRoute,
+  } as any)
+const AppProjectsProjectIdRefine_ideaRoute =
+  AppProjectsProjectIdRefine_ideaRouteImport.update({
+    id: '/projects/$projectId/refine_idea',
+    path: '/projects/$projectId/refine_idea',
+    getParentRoute: () => AppRouteRoute,
+  } as any)
+const AppProjectsProjectIdPlannerRoute =
+  AppProjectsProjectIdPlannerRouteImport.update({
+    id: '/projects/$projectId/planner',
+    path: '/projects/$projectId/planner',
+    getParentRoute: () => AppRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
-  '/agent_talk': typeof Agent_talkRoute
-  '/refine_idee': typeof Refine_ideeRoute
   '/app/': typeof AppIndexRoute
   '/app/tools/idea-generator': typeof AppToolsIdeaGeneratorRoute
+  '/app/projects': typeof AppProjectsIndexRoute
+  '/app/projects/$projectId/planner': typeof AppProjectsProjectIdPlannerRoute
+  '/app/projects/$projectId/refine_idea': typeof AppProjectsProjectIdRefine_ideaRoute
+  '/app/projects/$projectId': typeof AppProjectsProjectIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/agent_talk': typeof Agent_talkRoute
-  '/refine_idee': typeof Refine_ideeRoute
   '/app': typeof AppIndexRoute
   '/app/tools/idea-generator': typeof AppToolsIdeaGeneratorRoute
+  '/app/projects': typeof AppProjectsIndexRoute
+  '/app/projects/$projectId/planner': typeof AppProjectsProjectIdPlannerRoute
+  '/app/projects/$projectId/refine_idea': typeof AppProjectsProjectIdRefine_ideaRoute
+  '/app/projects/$projectId': typeof AppProjectsProjectIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/app': typeof AppRouteRouteWithChildren
-  '/agent_talk': typeof Agent_talkRoute
-  '/refine_idee': typeof Refine_ideeRoute
   '/app/': typeof AppIndexRoute
   '/app/tools/idea-generator': typeof AppToolsIdeaGeneratorRoute
+  '/app/projects/': typeof AppProjectsIndexRoute
+  '/app/projects/$projectId/planner': typeof AppProjectsProjectIdPlannerRoute
+  '/app/projects/$projectId/refine_idea': typeof AppProjectsProjectIdRefine_ideaRoute
+  '/app/projects/$projectId/': typeof AppProjectsProjectIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/app'
-    | '/agent_talk'
-    | '/refine_idee'
     | '/app/'
     | '/app/tools/idea-generator'
+    | '/app/projects'
+    | '/app/projects/$projectId/planner'
+    | '/app/projects/$projectId/refine_idea'
+    | '/app/projects/$projectId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/agent_talk'
-    | '/refine_idee'
     | '/app'
     | '/app/tools/idea-generator'
+    | '/app/projects'
+    | '/app/projects/$projectId/planner'
+    | '/app/projects/$projectId/refine_idea'
+    | '/app/projects/$projectId'
   id:
     | '__root__'
     | '/'
     | '/app'
-    | '/agent_talk'
-    | '/refine_idee'
     | '/app/'
     | '/app/tools/idea-generator'
+    | '/app/projects/'
+    | '/app/projects/$projectId/planner'
+    | '/app/projects/$projectId/refine_idea'
+    | '/app/projects/$projectId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRouteRoute: typeof AppRouteRouteWithChildren
-  Agent_talkRoute: typeof Agent_talkRoute
-  Refine_ideeRoute: typeof Refine_ideeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/refine_idee': {
-      id: '/refine_idee'
-      path: '/refine_idee'
-      fullPath: '/refine_idee'
-      preLoaderRoute: typeof Refine_ideeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/agent_talk': {
-      id: '/agent_talk'
-      path: '/agent_talk'
-      fullPath: '/agent_talk'
-      preLoaderRoute: typeof Agent_talkRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/app': {
       id: '/app'
       path: '/app'
@@ -141,11 +152,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRouteRoute
     }
+    '/app/projects/': {
+      id: '/app/projects/'
+      path: '/projects'
+      fullPath: '/app/projects'
+      preLoaderRoute: typeof AppProjectsIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
     '/app/tools/idea-generator': {
       id: '/app/tools/idea-generator'
       path: '/tools/idea-generator'
       fullPath: '/app/tools/idea-generator'
       preLoaderRoute: typeof AppToolsIdeaGeneratorRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/app/projects/$projectId/': {
+      id: '/app/projects/$projectId/'
+      path: '/projects/$projectId'
+      fullPath: '/app/projects/$projectId'
+      preLoaderRoute: typeof AppProjectsProjectIdIndexRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/app/projects/$projectId/refine_idea': {
+      id: '/app/projects/$projectId/refine_idea'
+      path: '/projects/$projectId/refine_idea'
+      fullPath: '/app/projects/$projectId/refine_idea'
+      preLoaderRoute: typeof AppProjectsProjectIdRefine_ideaRouteImport
+      parentRoute: typeof AppRouteRoute
+    }
+    '/app/projects/$projectId/planner': {
+      id: '/app/projects/$projectId/planner'
+      path: '/projects/$projectId/planner'
+      fullPath: '/app/projects/$projectId/planner'
+      preLoaderRoute: typeof AppProjectsProjectIdPlannerRouteImport
       parentRoute: typeof AppRouteRoute
     }
   }
@@ -154,11 +193,19 @@ declare module '@tanstack/react-router' {
 interface AppRouteRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppToolsIdeaGeneratorRoute: typeof AppToolsIdeaGeneratorRoute
+  AppProjectsIndexRoute: typeof AppProjectsIndexRoute
+  AppProjectsProjectIdPlannerRoute: typeof AppProjectsProjectIdPlannerRoute
+  AppProjectsProjectIdRefine_ideaRoute: typeof AppProjectsProjectIdRefine_ideaRoute
+  AppProjectsProjectIdIndexRoute: typeof AppProjectsProjectIdIndexRoute
 }
 
 const AppRouteRouteChildren: AppRouteRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppToolsIdeaGeneratorRoute: AppToolsIdeaGeneratorRoute,
+  AppProjectsIndexRoute: AppProjectsIndexRoute,
+  AppProjectsProjectIdPlannerRoute: AppProjectsProjectIdPlannerRoute,
+  AppProjectsProjectIdRefine_ideaRoute: AppProjectsProjectIdRefine_ideaRoute,
+  AppProjectsProjectIdIndexRoute: AppProjectsProjectIdIndexRoute,
 }
 
 const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
@@ -168,8 +215,6 @@ const AppRouteRouteWithChildren = AppRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRouteRoute: AppRouteRouteWithChildren,
-  Agent_talkRoute: Agent_talkRoute,
-  Refine_ideeRoute: Refine_ideeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
