@@ -1,1 +1,2 @@
 .env.local
+/ads-generator-app/node_modules
