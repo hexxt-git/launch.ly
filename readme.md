@@ -1,32 +1,37 @@
-#  launch.ly
+# 🚀 launch.ly
 
-**launch.ly** is an AI-native application that transforms a single startup idea into a fully refined concept with an actionable execution plan. It uses a sophisticated, two-stage multi-agent system to simulate a team of expert collaborators, guided by human interaction.
+**launch.ly** is an AI-native application that transforms a single startup idea into a fully refined concept with an actionable, scheduled execution plan. It uses a sophisticated, two-stage multi-agent system to simulate a team of expert collaborators, which then feeds a resilient, distributed task scheduler to automate real-world actions.
 
-##  Core Features
+## ✨ Core Features
 
-* **AI-Powered Idea Refinement:** Leverages a "Refinement Council" of specialized AI agents to analyze an idea from every critical angle (marketing, legal, technical, etc.).
-* **Live Collaboration Showcase:** A real-time streaming UI that visualizes the agent collaboration, showing which agent is "thinking" and displaying their insights as they are generated.
-* **Structured Reporting:** A final, clean summary report is generated for user review, synthesizing the entire collaboration into actionable insights.
+* **AI-Powered Idea Refinement:** A "Refinement Council" of specialized AI agents analyzes an idea from every critical angle (marketing, legal, technical, etc.).
+* **Live Collaboration Showcase:** A real-time streaming UI that visualizes the agent collaboration, displaying their insights as they are generated.
 * **Human-in-the-Loop Approval:** The user acts as the CEO, giving the final "go" or "no-go" on the refined concept before any execution planning begins.
-* **Type-Safe Full-Stack:** Built on a modern, fully type-safe stack from the database to the UI.
+* **Agentic Execution Planning:** A "Planner Agent" converts the final report into a structured, machine-readable JSON plan.
+* **Tool-Using Executor Agents:** A crew of "Executor Agents" (Sales, Content Creator) use tools to carry out the plan, such as finding leads and drafting content.
+* **Resilient Task Scheduling:** Integration with the **Chronos Engine**, a distributed task scheduler using Kafka and PostgreSQL, to reliably schedule and execute time-based tasks like sending meeting notifications or follow-up emails.
 
-## 🧠 The Agentic Architecture
-![image](https://github.com/user-attachments/assets/4bb3404d-d240-4ea3-94a6-6eb311f9887a)
+## 🧠 The Full Architecture
 
-
-
+![image](https://github.com/user-attachments/assets/c0709320-3b20-4543-a35b-be937a4f367e)
 
 
 ## 🛠️ Tech Stack
 
 * **Framework:** Next.js
 * **Routing & Server Functions:** TanStack Router
-* **Database & ORM:** Prisma
+* **Database:** PostgreSQL (Primary & for Chronos) & SQLite (for local development)
+* **ORM:** Prisma
 * **AI Orchestration:** LangGraph.js
 * **Language Model (LLM):** Google Gemini
+* **Task Scheduling (Chronos Engine):**
+    * **Message Queue:** Apache Kafka
+    * **Worker/API:** Python (FastAPI)
 * **Styling:** Tailwind CSS
 * **UI Components:** shadcn/ui
 * **Package Manager:** pnpm
+
+---
 
 ## 🚀 Getting Started
 
@@ -34,27 +39,32 @@
 
 * Node.js (v18 or newer)
 * pnpm
+* Docker & Docker Compose (for Chronos Engine)
 * A Google Gemini API Key
-* A PostgreSQL or other database connection string
 
 ### Installation & Setup
 
 1.  **Clone the repository:**
     ```bash
-    git clone [https://github.com/](https://github.com/)[hexxt]/idea_to_gen.git
+    git clone [https://github.com/](https://github.com/)[your-username]/launch.ly.git
     cd launch.ly
     ```
 
-2.  **Install dependencies:**
-    ```bash
-    pnpm install
+2.  **Set up environment variables:**
+    Create a file named `.env.local` in the root of the project. Add your database URL and Google API key:
+    ```.env
+    # For local development with SQLite
+    DATABASE_URL="file:./dev.db"
+    
+    # For production with PostgreSQL
+    # DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+
+    GOOGLE_API_KEY="your_google_api_key_here"
     ```
 
-3.  **Set up environment variables:**
-    Create a file named `.env.local` in the root of the project. Add your database URL and Google API key:
-    ```
-    DATABASE_URL="your_database_connection_string"
-    GOOGLE_API_KEY="your_google_api_key_here"
+3.  **Install dependencies for the webapp:**
+    ```bash
+    pnpm install
     ```
 
 4.  **Run database migrations:**
@@ -63,10 +73,18 @@
     pnpm prisma db push
     ```
 
-5.  **Run the development server:**
+5.  **Run the Chronos Engine (Kafka, PostgreSQL, etc.):**
+    Navigate to your Chronos Engine directory and start all services.
+    ```bash
+    cd path/to/chronos-engine
+    docker-compose up --build -d
+    ```
+
+6.  **Run the main webapp development server:**
     ```bash
     pnpm dev
     ```
 
 The application will be available at `http://localhost:3000`.
 
+---
