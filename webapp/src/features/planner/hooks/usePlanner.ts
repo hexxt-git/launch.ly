@@ -1,4 +1,6 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { toast } from 'sonner'
 import {
   getPlannerData,
   createColumn,
@@ -10,239 +12,345 @@ import {
   generatePlannerTasks,
 } from '@/server-fns/planner'
 
-export type PlannerItem = {
+export interface PlannerItem {
   id: string
+  projectId: string
+  columnId: string
   title: string
   description: string | null
   completed: boolean
   order: number
-  columnId: string
-  projectId: string
 }
 
-export type PlannerColumn = {
+export interface PlannerColumn {
   id: string
+  projectId: string
   title: string
   order: number
-  projectId: string
   items: PlannerItem[]
 }
 
 export function usePlanner(projectId: string) {
-  const [columns, setColumns] = useState<PlannerColumn[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const queryClient = useQueryClient()
 
-  const fetchPlannerData = useCallback(async () => {
-    try {
-      setLoading(true)
-      const data = await getPlannerData({ data: { projectId } })
-      setColumns(data)
-      setError(null)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to fetch planner data')
-    } finally {
-      setLoading(false)
-    }
-  }, [projectId])
+  // Local state for immediate UI updates
+  const [localColumns, setLocalColumns] = useState<PlannerColumn[]>([])
+  const [pendingOperations, setPendingOperations] = useState(new Set<string>())
 
+  // Server state
+  const {
+    data: serverColumns,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ['planner', projectId],
+    queryFn: () => getPlannerData({ data: { projectId } }),
+    refetchOnWindowFocus: false,
+  })
+
+  // Sync server state to local state when it changes
   useEffect(() => {
-    fetchPlannerData()
-  }, [fetchPlannerData])
-
-  const addColumn = async (title: string) => {
-    try {
-      const newColumn = await createColumn({
-        data: { projectId, title },
-      })
-      setColumns((prev) => [...prev, newColumn])
-      return newColumn
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create column')
-      throw err
+    if (serverColumns) {
+      setLocalColumns(serverColumns)
     }
+  }, [serverColumns])
+
+  // Add pending operation
+  const addPendingOp = (id: string) => {
+    setPendingOperations((prev) => new Set([...prev, id]))
   }
 
-  const editColumn = async (columnId: string, title: string) => {
-    try {
-      const updatedColumn = await updateColumn({
-        data: { columnId, title },
-      })
-      setColumns((prev) => prev.map((col) => (col.id === columnId ? updatedColumn : col)))
-      return updatedColumn
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update column')
-      throw err
-    }
+  // Remove pending operation
+  const removePendingOp = (id: string) => {
+    setPendingOperations((prev) => {
+      const next = new Set(prev)
+      next.delete(id)
+      return next
+    })
   }
 
-  const removeColumn = async (columnId: string) => {
-    try {
-      await deleteColumn({ data: { columnId } })
-      setColumns((prev) => prev.filter((col) => col.id !== columnId))
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete column')
-      throw err
-    }
-  }
-
-  const addItem = async (columnId: string, title: string, description?: string) => {
-    try {
-      const newItem = await createItem({
-        data: { projectId, columnId, title, description },
-      })
-      setColumns((prev) =>
-        prev.map((col) => (col.id === columnId ? { ...col, items: [...col.items, newItem] } : col)),
-      )
-      return newItem
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create item')
-      throw err
-    }
-  }
-
-  const editItem = async (
-    itemId: string,
-    updates: {
-      title?: string
-      description?: string
-      completed?: boolean
-      columnId?: string
-      order?: number
+  // Mutations
+  const addColumnMutation = useMutation({
+    mutationFn: (data: { projectId: string; title: string }) => createColumn({ data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['planner', projectId] })
     },
-  ) => {
-    try {
-      const updatedItem = await updateItem({
-        data: { itemId, ...updates },
-      })
+  })
 
-      setColumns((prev) =>
-        prev.map((col) => ({
-          ...col,
-          items: col.items
-            .map((item) => (item.id === itemId ? updatedItem : item))
-            .filter((item) => (updates.columnId ? item.columnId === col.id : true)),
-        })),
-      )
+  const editColumnMutation = useMutation({
+    mutationFn: (data: { columnId: string; title: string }) => updateColumn({ data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['planner', projectId] })
+    },
+  })
 
-      // If moving to a different column, add to new column
-      if (updates.columnId) {
-        setColumns((prev) =>
-          prev.map((col) =>
-            col.id === updates.columnId && !col.items.find((item) => item.id === itemId)
-              ? { ...col, items: [...col.items, updatedItem].sort((a, b) => a.order - b.order) }
-              : col,
-          ),
-        )
+  const removeColumnMutation = useMutation({
+    mutationFn: (data: { columnId: string }) => deleteColumn({ data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['planner', projectId] })
+    },
+  })
+
+  const addItemMutation = useMutation({
+    mutationFn: (data: { projectId: string; columnId: string; title: string; description?: string }) =>
+      createItem({ data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['planner', projectId] })
+    },
+  })
+
+  const editItemMutation = useMutation({
+    mutationFn: (data: { itemId: string; [key: string]: any }) => updateItem({ data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['planner', projectId] })
+    },
+  })
+
+  const removeItemMutation = useMutation({
+    mutationFn: (data: { itemId: string }) => deleteItem({ data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['planner', projectId] })
+    },
+  })
+
+  const generateTasksMutation = useMutation({
+    mutationFn: (data: { projectId: string; projectDescription: string; customPrompt?: string }) =>
+      generatePlannerTasks({ data }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['planner', projectId] })
+    },
+  })
+
+  // Operations
+  const addColumn = useCallback(
+    async (title: string) => {
+      const tempId = `temp-${Date.now()}`
+      const newColumn: PlannerColumn = {
+        id: tempId,
+        projectId,
+        title,
+        order: localColumns.length,
+        items: [],
       }
 
-      return updatedItem
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update item')
-      throw err
-    }
-  }
+      // Immediate local update
+      setLocalColumns((prev) => [...prev, newColumn])
+      addPendingOp(tempId)
 
-  const removeItem = async (itemId: string) => {
-    try {
-      await deleteItem({ data: { itemId } })
-      setColumns((prev) =>
+      try {
+        await addColumnMutation.mutateAsync({ projectId, title })
+      } catch (error) {
+        // Rollback local state
+        setLocalColumns((prev) => prev.filter((col) => col.id !== tempId))
+        throw error
+      } finally {
+        removePendingOp(tempId)
+      }
+    },
+    [localColumns.length, projectId, addColumnMutation],
+  )
+
+  const editColumn = useCallback(
+    async (columnId: string, title: string) => {
+      // Immediate local update
+      setLocalColumns((prev) => prev.map((col) => (col.id === columnId ? { ...col, title } : col)))
+      addPendingOp(columnId)
+
+      try {
+        await editColumnMutation.mutateAsync({ columnId, title })
+      } catch (error) {
+        // Rollback - will be handled by query refetch on error
+        throw error
+      } finally {
+        removePendingOp(columnId)
+      }
+    },
+    [editColumnMutation],
+  )
+
+  const removeColumn = useCallback(
+    async (columnId: string) => {
+      // Immediate local update
+      setLocalColumns((prev) => prev.filter((col) => col.id !== columnId))
+      addPendingOp(columnId)
+
+      try {
+        await removeColumnMutation.mutateAsync({ columnId })
+      } catch (error) {
+        // Rollback - will be handled by query refetch on error
+        throw error
+      } finally {
+        removePendingOp(columnId)
+      }
+    },
+    [removeColumnMutation],
+  )
+
+  const addItem = useCallback(
+    async (columnId: string, title: string, description?: string) => {
+      const tempId = `temp-${Date.now()}`
+      const newItem: PlannerItem = {
+        id: tempId,
+        projectId,
+        columnId,
+        title,
+        description: description || null,
+        completed: false,
+        order: localColumns.find((col) => col.id === columnId)?.items.length || 0,
+      }
+
+      // Immediate local update
+      setLocalColumns((prev) =>
+        prev.map((col) => (col.id === columnId ? { ...col, items: [...col.items, newItem] } : col)),
+      )
+      addPendingOp(tempId)
+
+      try {
+        await addItemMutation.mutateAsync({ projectId, columnId, title, description })
+      } catch (error) {
+        // Rollback local state
+        setLocalColumns((prev) =>
+          prev.map((col) =>
+            col.id === columnId ? { ...col, items: col.items.filter((item) => item.id !== tempId) } : col,
+          ),
+        )
+        throw error
+      } finally {
+        removePendingOp(tempId)
+      }
+    },
+    [localColumns, projectId, addItemMutation],
+  )
+
+  const editItem = useCallback(
+    async (itemId: string, updates: Partial<PlannerItem>) => {
+      // Immediate local update
+      setLocalColumns((prev) =>
+        prev.map((col) => ({
+          ...col,
+          items: col.items.map((item) => (item.id === itemId ? { ...item, ...updates } : item)),
+        })),
+      )
+      addPendingOp(itemId)
+
+      try {
+        await editItemMutation.mutateAsync({ itemId, ...updates })
+      } catch (error) {
+        // Rollback - will be handled by query refetch on error
+        throw error
+      } finally {
+        removePendingOp(itemId)
+      }
+    },
+    [editItemMutation],
+  )
+
+  const removeItem = useCallback(
+    async (itemId: string) => {
+      // Immediate local update
+      setLocalColumns((prev) =>
         prev.map((col) => ({
           ...col,
           items: col.items.filter((item) => item.id !== itemId),
         })),
       )
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete item')
-      throw err
-    }
-  }
+      addPendingOp(itemId)
 
-  const generateTasks = async (projectDescription: string, customPrompt?: string) => {
-    try {
-      setLoading(true)
-      const result = await generatePlannerTasks({
-        data: { projectId, projectDescription, customPrompt },
-      })
-
-      if (result.success) {
-        await fetchPlannerData() // Refresh data
-        return result
-      } else {
-        throw new Error(result.error)
+      try {
+        await removeItemMutation.mutateAsync({ itemId })
+      } catch (error) {
+        // Rollback - will be handled by query refetch on error
+        throw error
+      } finally {
+        removePendingOp(itemId)
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate tasks')
-      throw err
-    } finally {
-      setLoading(false)
-    }
-  }
+    },
+    [removeItemMutation],
+  )
 
-  const moveItem = (itemId: string, destinationColumnId: string, destinationIndex: number) => {
-    setColumns((prevColumns) => {
-      const newColumns = [...prevColumns]
+  const moveItem = useCallback(
+    async (itemId: string, destinationColumnId: string, destinationIndex: number) => {
+      let movedItem: PlannerItem | undefined
 
-      // Find source column and item
-      let sourceColumn: PlannerColumn | null = null
-      let itemToMove: PlannerItem | null = null
-      let sourceIndex = -1
+      // Immediate local update
+      setLocalColumns((prev) => {
+        const newCols = prev.map((col) => ({
+          ...col,
+          items: col.items.filter((item) => {
+            if (item.id === itemId) {
+              movedItem = item
+              return false
+            }
+            return true
+          }),
+        }))
 
-      for (const column of newColumns) {
-        sourceIndex = column.items.findIndex((item) => item.id === itemId)
-        if (sourceIndex !== -1) {
-          sourceColumn = column
-          itemToMove = column.items[sourceIndex]
-          break
+        if (movedItem) {
+          return newCols.map((col) => {
+            if (col.id === destinationColumnId) {
+              const newItems = [...col.items]
+              newItems.splice(destinationIndex, 0, {
+                ...movedItem!,
+                columnId: destinationColumnId,
+                order: destinationIndex,
+              })
+              return {
+                ...col,
+                items: newItems.map((item, idx) => ({ ...item, order: idx })),
+              }
+            }
+            return col
+          })
         }
+
+        return newCols
+      })
+
+      addPendingOp(itemId)
+
+      try {
+        await editItemMutation.mutateAsync({
+          itemId,
+          columnId: destinationColumnId,
+          order: destinationIndex,
+        })
+      } catch (error) {
+        // Rollback - will be handled by query refetch on error
+        throw error
+      } finally {
+        removePendingOp(itemId)
       }
+    },
+    [editItemMutation],
+  )
 
-      if (!sourceColumn || !itemToMove) return prevColumns
-
-      // Remove item from source column
-      sourceColumn.items.splice(sourceIndex, 1)
-
-      // Find destination column
-      const destColumn = newColumns.find((col) => col.id === destinationColumnId)
-      if (!destColumn) return prevColumns
-
-      // Add item to destination column
-      destColumn.items.splice(destinationIndex, 0, {
-        ...itemToMove,
-        columnId: destinationColumnId,
-      })
-
-      // Update orders for affected columns
-      sourceColumn.items.forEach((item, index) => {
-        item.order = index
-      })
-
-      destColumn.items.forEach((item, index) => {
-        item.order = index
-      })
-
-      return newColumns
-    })
-
-    // Update in database (fire and forget for now)
-    editItem(itemId, {
-      columnId: destinationColumnId,
-      order: destinationIndex,
-    }).catch(console.error)
-  }
+  const generateTasks = useCallback(
+    async (projectDescription: string, customPrompt?: string) => {
+      try {
+        await generateTasksMutation.mutateAsync({
+          projectId,
+          projectDescription,
+          customPrompt,
+        })
+      } catch (error) {
+        throw error
+      }
+    },
+    [projectId, generateTasksMutation],
+  )
 
   return {
-    columns,
-    loading,
-    error,
+    columns: localColumns,
+    loading: isLoading,
+    error: error ? (error as Error).message : null,
+    pendingOperations,
     addColumn,
     editColumn,
     removeColumn,
     addItem,
     editItem,
     removeItem,
-    generateTasks,
     moveItem,
-    refetch: fetchPlannerData,
+    generateTasks,
   }
 }

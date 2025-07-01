@@ -233,6 +233,7 @@ Make sure the tasks are:
 
 Return the data in the specified JSON format.
 `
+      console.log({ prompt })
 
       const response = await ai.models.generateContent({
         model: 'gemini-2.5-flash',
@@ -244,6 +245,8 @@ Return the data in the specified JSON format.
           },
         ],
       })
+
+      console.log({ response })
 
       const responseText = response.candidates?.[0]?.content?.parts?.[0]?.text
       if (!responseText) {
