@@ -3,7 +3,7 @@ import Logo from "../assets/logo";
 export default function Headers() {
   return (
    
-    <header className="w-full flex flex-row justify-around items-center px-8 py-4">
+    <header className="w-full flex flex-row justify-around  items-center px-8 py-4 backdrop-blur-md">
         
         <div className='flex flex-row items-center gap-3'>
           <Logo/>

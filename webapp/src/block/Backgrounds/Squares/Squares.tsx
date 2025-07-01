@@ -33,17 +33,20 @@ const Squares: React.FC<SquaresProps> = ({
   const gridOffset = useRef<GridOffset>({ x: 0, y: 0 })
   const hoveredSquareRef = useRef<GridOffset | null>(null)
 
+  const resizeCanvas = () => {
+    const canvas = canvasRef.current
+    if(!canvas) return;
+    canvas.width = canvas.offsetWidth
+    canvas.height = canvas.offsetHeight
+    numSquaresX.current = Math.ceil(canvas.width / squareSize) + 1
+    numSquaresY.current = Math.ceil(canvas.height / squareSize) + 1
+  }
+
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
 
-    const resizeCanvas = () => {
-      canvas.width = canvas.offsetWidth
-      canvas.height = canvas.offsetHeight
-      numSquaresX.current = Math.ceil(canvas.width / squareSize) + 1
-      numSquaresY.current = Math.ceil(canvas.height / squareSize) + 1
-    }
 
     window.addEventListener('resize', resizeCanvas)
     resizeCanvas()
