@@ -3,7 +3,6 @@ import type { ReactNode } from 'react'
 import { Outlet, createRootRoute, HeadContent, Scripts } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { useEffect } from 'react'
-import '../global.css'
 import { Toaster } from '@/components/ui/sonner'
 import { ProjectsProvider } from '@/features/navigation/ProjectsContext'
 
