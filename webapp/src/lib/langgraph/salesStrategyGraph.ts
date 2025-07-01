@@ -1,5 +1,3 @@
-// src/lib/langgraph/salesStrategyGraph.ts
-
 import { StateGraph, END } from "@langchain/langgraph";
 import { ToolNode } from "@langchain/langgraph/prebuilt";
 import type { BaseMessage } from "@langchain/core/messages";
@@ -12,7 +10,6 @@ export interface SalesStrategyState {
 
 const tools = [searchForLeadsTool, saveLeadsToDBTool];
 const toolNode = new ToolNode(tools);
-
 
 const shouldContinue = (state: SalesStrategyState) => {
   const lastMessage = state.messages[state.messages.length - 1];
